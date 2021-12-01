@@ -54,7 +54,9 @@ var config = { prefix: "!" }
 
 client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`);
-  })
+})
+
+let timerId = 0;
 
 client.on("messageCreate", message => {
     const args = message.content.slice(config.prefix.length).trim().split(' ');
@@ -108,49 +110,52 @@ client.on("messageCreate", message => {
         //Create the new date
         let newDate = new Date().addDays(days).addHours(hours).addMinutes(minutes).addSeconds(seconds);
         console.log("updated:", newDate.toLocaleString());
+
+        timerId++;
+        createNewTimer(timerId, newDate);
     }
   }
 })
 
 //#################################################
 
-
-// let nextWeek = new Date().addDays(7);
-// let tomorrow = new Date().addHours(24);
-
+// Calculate the difference between entered date and current date.
 var calcDifference = function(value) {
     return Date.parse(value) - Date.parse(new Date());
 }
 
-// //Calculates difference between entered date and now
-// var calcTimeDelta = function (value) {
-//     var difference = Date.parse(value) - Date.parse(new Date());
-//     var sec_num = parseInt(difference / 1000);
-//     var days = Math.floor(sec_num / (3600 * 24));
-//     var hours = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
-//     var minutes = Math.floor((sec_num - (days * (3600 * 24)) - (hours * 3600)) / 60);
-//     var seconds = sec_num - (days * (3600 * 24)) - (hours * 3600) - (minutes * 60);
+// Create a new timer with desired date value
+function createNewTimer(name, date) {
+    name = setInterval(function(){timerFunction(name, date)}, 750);
+}
 
-//     //Account for single digit numbers
-//     if (hours < 10) {hours = "0"+hours;}
-//     if (minutes < 10) {minutes = "0"+minutes;}
-//     if (seconds < 10) {seconds = "0"+seconds;}
-
-//     // Print value for debugging purposes
-//     // console.log(`Time left: ${days}:${hours}:${minutes}:${seconds}`);
-
-//     return days+':'+hours+':'+minutes+':'+seconds;
-// }
-
-
-// var timer1 = setInterval(function(){timerFunction(nextWeek)}, 750);
-// var timer2 = setInterval(function(){timerFunction(tomorrow)}, 750);
-
-function timerFunction(time) {
+// Start a timer
+function timerFunction(name, time) {
     // console.log("Time left is: ", calcTimeDelta(time));
+    console.log(`Timer[${name}] has: `, calcTimeDelta(time), " time left.");
 
     if(calcDifference(time) <= 0){
-        console.log("Time is up!");
-        clearInterval(timer1);
+        clearInterval(name);
+        return console.log("Time is up!");
     }
+}
+
+//Calculates difference between entered date and now
+var calcTimeDelta = function (value) {
+    var difference = Date.parse(value) - Date.parse(new Date());
+    var sec_num = parseInt(difference / 1000);
+    var days = Math.floor(sec_num / (3600 * 24));
+    var hours = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
+    var minutes = Math.floor((sec_num - (days * (3600 * 24)) - (hours * 3600)) / 60);
+    var seconds = sec_num - (days * (3600 * 24)) - (hours * 3600) - (minutes * 60);
+
+    //Account for single digit numbers
+    if (hours < 10) {hours = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+
+    // Print value for debugging purposes
+    // console.log(`Time left: ${days}:${hours}:${minutes}:${seconds}`);
+
+    return days+':'+hours+':'+minutes+':'+seconds;
 }
