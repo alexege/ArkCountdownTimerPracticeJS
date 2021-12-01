@@ -5,34 +5,9 @@ var config = { prefix: "!" }
 var time = 0;
 
 client.on("ready", () => {
-  console.log(`Logged in as ${client.user.tag}!`)
+  console.log(`Logged in as ${client.user.tag}!`);
 })
 
-var interval = 1000; // ms
-var expected = Date.now() + interval;
-
-function step() {
-  var drift = Date.now() - expected; // the drift (positive for overshooting)
-  console.log("drift:", drift);
-  console.log("now:", Date.now())
-  console.log("expected:", expected);
-  console.log("difference:", Date.now() - expected)
-  if (drift > interval) {
-      // something really bad happened. Maybe the browser (tab) was inactive?
-      // possibly special handling to avoid futile "catch up" run
-      console.log("drift > interval. Something has gone wrong!");
-  }
-
-  time++;
-  console.log("Time: ", time);
-
-  // if(time == 2){
-  //   return console.log("Timer is up!");
-  // }
-
-  expected += interval;
-  setTimeout(step, Math.max(0, interval - drift)); // take into account drift
-}
 
 client.on("messageCreate", message => {
   const args = message.content.slice(config.prefix.length).trim().split(' ');
@@ -43,7 +18,8 @@ client.on("messageCreate", message => {
     if(isNaN(userInput)) {
       return message.reply('Sorry, please eneter a valid number!');
     } else {
-      setTimeout(step, 1000);
+      //Start the timer
+
     }
   }
 })
@@ -118,7 +94,7 @@ client.on('messageCreate', message => {
       const minutesInMinutes = minutes * 60;
       const secondsInMinutes = seconds;
 
-
+      const totalMinutes = daysInMinutes + hoursInMinutes + minutesInMinutes + secondsInMinutes;
 
       // // Takes in duration (mins * 60)
       
@@ -353,16 +329,16 @@ function startTimer() {
   console.log("________________________________________________________________________\n");
   
   
-  console.log("island:\t\t\t", toHHMMSS(island_orp_expiration));
-  console.log("Valguero:\t\t", toHHMMSS(valguero_orp_expiration));
-  console.log("Ragnarok:\t\t", toHHMMSS(ragnarok_orp_expiration));
-  console.log("Genesis:\t\t", toHHMMSS(genesis_orp_expiration));
-  console.log("Genesis2:\t\t", toHHMMSS(genesis2_orp_expiration));
-  console.log("Aberration:\t\t", toHHMMSS(aberration_orp_expiration));
-  console.log("Center:\t\t\t", toHHMMSS(center_orp_expiration));
-  console.log("Scorched_Earth:\t\t", toHHMMSS(scorched_earth_orp_expiration));
+  console.log("island:\t\t\t",      toHHMMSS(island_orp_expiration));
+  console.log("Valguero:\t\t",      toHHMMSS(valguero_orp_expiration));
+  console.log("Ragnarok:\t\t",      toHHMMSS(ragnarok_orp_expiration));
+  console.log("Genesis:\t\t",       toHHMMSS(genesis_orp_expiration));
+  console.log("Genesis2:\t\t",      toHHMMSS(genesis2_orp_expiration));
+  console.log("Aberration:\t\t",    toHHMMSS(aberration_orp_expiration));
+  console.log("Center:\t\t\t",      toHHMMSS(center_orp_expiration));
+  console.log("Scorched_Earth:\t\t",toHHMMSS(scorched_earth_orp_expiration));
   console.log("Crystal_Isles:\t\t", toHHMMSS(crystal_isles_orp_expiration));
-  console.log("Extinction:\t\t", toHHMMSS(exctinction_orp_expiration));
+  console.log("Extinction:\t\t",    toHHMMSS(exctinction_orp_expiration));
   
   console.log("________________________________________________________________________");
   
@@ -444,3 +420,4 @@ setTimeout(comparison(),100); */
 
 
 
+client.login('OTExNzI5MDE5NzA2Mjc3OTE4.YZln0Q.Mt0vQyQ32IAa12USC1eFP-_w03c');
