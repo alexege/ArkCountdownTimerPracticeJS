@@ -419,5 +419,5 @@ setTimeout(comparison(),100); */
 
 
 
-
-client.login('OTExNzI5MDE5NzA2Mjc3OTE4.YZln0Q.Mt0vQyQ32IAa12USC1eFP-_w03c');
+TOKEN = '';
+client.login(TOKEN);

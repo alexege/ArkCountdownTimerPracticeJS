@@ -105,21 +105,13 @@ client.on("messageCreate", message => {
             }
         console.log(`${days}:Days, ${hours}:Hours, ${minutes}:Minutes, ${seconds}:Seconds`);
 
-        printVals(days, hours, minutes, seconds);
+        //Create the new date
+        let newDate = new Date().addDays(days).addHours(hours).addMinutes(minutes).addSeconds(seconds);
+        console.log("updated:", newDate.toLocaleString());
     }
   }
 })
 
-function printVals(days, hours, minutes, seconds){
-    let now = new Date();
-    console.log("now:", now.toLocaleString());
-    let updated_now = now.addDays(days).addHours(hours).addMinutes(minutes).addSeconds(seconds);
-    console.log("updated:", updated_now.toLocaleString());
-    return;
-}
-
-
-client.login('OTExNzI5MDE5NzA2Mjc3OTE4.YZln0Q.Mt0vQyQ32IAa12USC1eFP-_w03c');
 //#################################################
 
 
