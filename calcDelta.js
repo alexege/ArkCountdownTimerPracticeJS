@@ -56,11 +56,22 @@ client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`);
 })
 
+let active = {};
+let listOfTimers = [];
+let listOfActiveTimers = [];
 let timerId = 0;
 
 client.on("messageCreate", message => {
     const args = message.content.slice(config.prefix.length).trim().split(' ');
     const command = args.shift().toLowerCase();
+
+    if (command === 'status') {
+        let printDict = '';
+        for (var i in active) {
+            printDict += `[${i}] : ${calcTimeDelta(active[i])}\n`
+        }
+        message.reply(`Active: [${listOfActiveTimers}]\n Inactive: [${listOfTimers}]\n ${printDict}`);
+    }
 
     if (command === 'timer') {
         const userInput = parseInt(args[0]);
@@ -113,6 +124,7 @@ client.on("messageCreate", message => {
 
         timerId++;
         createNewTimer(timerId, newDate);
+        return;
     }
   }
 })
@@ -126,16 +138,23 @@ var calcDifference = function(value) {
 
 // Create a new timer with desired date value
 function createNewTimer(name, date) {
-    name = setInterval(function(){timerFunction(name, date)}, 750);
+    listOfTimers.push(name);
+    listOfActiveTimers.push(name);
+    active[name] = date;
+    id = timerId;
+    name = setInterval(function(){timerFunction(name, id, date)}, 750);
 }
 
 // Start a timer
-function timerFunction(name, time) {
-    // console.log("Time left is: ", calcTimeDelta(time));
+function timerFunction(name, id, time) {
     console.log(`Timer[${name}] has: `, calcTimeDelta(time), " time left.");
 
     if(calcDifference(time) <= 0){
         clearInterval(name);
+        const indx = listOfActiveTimers.indexOf(id);
+        if(indx > -1){
+            listOfActiveTimers.splice(indx, 1);
+        }
         return console.log("Time is up!");
     }
 }
