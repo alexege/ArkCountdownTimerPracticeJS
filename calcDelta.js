@@ -57,8 +57,9 @@ client.on("ready", () => {
 })
 
 let active = {};
-let listOfTimers = [];
+let listOfFinishedTimers = [];
 let listOfActiveTimers = [];
+let listOfAllTimers = [];
 let timerId = 0;
 
 client.on("messageCreate", message => {
@@ -68,9 +69,12 @@ client.on("messageCreate", message => {
     if (command === 'status') {
         let printDict = '';
         for (var i in active) {
-            printDict += `[${i}] : ${calcTimeDelta(active[i])}\n`
+            if(active[i]){
+                printDict += `Timer [${i}] : ${calcTimeDelta(active[i])}\n`
+            }
         }
-        message.reply(`Active: [${listOfActiveTimers}]\n Inactive: [${listOfTimers}]\n ${printDict}`);
+        // message.reply(`Active: [${listOfActiveTimers}]\n Inactive: [${listOfFinishedTimers}]\n ${printDict}`);
+        message.reply(`Active: [${listOfActiveTimers}]\n Inactive: [${listOfFinishedTimers}]\n All: [${listOfAllTimers}]\n\n ${printDict}`);
     }
 
     if (command === 'timer') {
@@ -133,26 +137,40 @@ client.on("messageCreate", message => {
 
 // Calculate the difference between entered date and current date.
 var calcDifference = function(value) {
-    return Date.parse(value) - Date.parse(new Date());
+    let difference = Date.parse(value) - Date.parse(new Date());
+    if (difference > 0){
+        return difference;
+    } else {
+        return "Expired!";
+    }
 }
 
 // Create a new timer with desired date value
 function createNewTimer(name, date) {
-    listOfTimers.push(name);
+    console.log("Creating new timer with name: " + name + " date: " + date);
+    listOfAllTimers.push(name);
     listOfActiveTimers.push(name);
-    active[name] = date;
+    
+    // If dictionary entry doesn't exist, create one.
+    if(!active[name]){
+        active[name] = date;
+    }
+
+    console.log("active:", active);
     id = timerId;
     name = setInterval(function(){timerFunction(name, id, date)}, 750);
 }
 
 // Start a timer
 function timerFunction(name, id, time) {
-    console.log(`Timer[${name}] has: `, calcTimeDelta(time), " time left.");
+    // console.log(`Timer[${id}] has: `, calcTimeDelta(time), " time left.");
+    // console.log("active[name]:", Date(active[id]));
 
     if(calcDifference(time) <= 0){
         clearInterval(name);
         const indx = listOfActiveTimers.indexOf(id);
         if(indx > -1){
+            listOfFinishedTimers.push(listOfActiveTimers[indx]);
             listOfActiveTimers.splice(indx, 1);
         }
         return console.log("Time is up!");
@@ -176,5 +194,10 @@ var calcTimeDelta = function (value) {
     // Print value for debugging purposes
     // console.log(`Time left: ${days}:${hours}:${minutes}:${seconds}`);
 
-    return days+':'+hours+':'+minutes+':'+seconds;
+    let timeLeft = days+':'+hours+':'+minutes+':'+seconds;
+    if(timeLeft.includes("-")){
+        return 'Expired!';
+    } else {
+        return timeLeft;
+    }
 }
