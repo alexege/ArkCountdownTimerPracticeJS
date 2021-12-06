@@ -64,7 +64,7 @@ client.on("messageCreate", message => {
     }
 });
 
-client.login('OTExNzI5MDE5NzA2Mjc3OTE4.YZln0Q.6oI6AVgPambIqieUpXTazT2VL6g');
+client.login('');
 
 
 
@@ -241,7 +241,7 @@ Date.prototype.addSeconds = function(seconds) {
             return;
         }
     })
-    client.login('OTExNzI5MDE5NzA2Mjc3OTE4.YZln0Q.6oI6AVgPambIqieUpXTazT2VL6g');
+
     
     //#######################################################
       // Calculate the difference between entered date and current date.

@@ -5,7 +5,7 @@ var config = { prefix: "!" }
 let timerIndex = 0;
 let timersDict = {};
 let timeLeft = 0;
-let destinationDate = null;
+// let destinationDate = null;
 
 client.on("ready", () => {
     console.log(`Bot has started. Logged in as: ${client.user.tag}`);
@@ -29,20 +29,35 @@ client.on("messageCreate", message => {
         createNewTimer(timerName, duration, message);
     }
 
+    if (command === 'alltimers'){
+        let allTimers = '';
+        for (var i in timersDict){
+            allTimers += "\n" + Object.values(timersDict[i]);
+        }
+    }
+
     if (command === 'status'){
         let dictPrintOut = '';
         for (var i in timersDict){
             if(timersDict[i]){
-                dictPrintOut += "\n" + Object.values(timersDict[i]);
+                dictPrintOut += "\n" + timersDict[i].name + " : " + timersDict[i].timeLeft;
             }
         }
-        message.reply(`Here is the status of all things: ${dictPrintOut}`);
+        message.reply(`${dictPrintOut}`);
     }
 
     if (command === 'left'){
         message.reply('Time left: ' + timeLeft);
     }
 });
+
+//timerName = {
+//      difference: 10000
+//      duration: '0:10'
+//      index: 2
+//      name: 'app'
+//      timeLeft: '0:00:00:10'
+//}
 
 // name: 'app', duration: '1:00'
 function createNewTimer(name, duration, message) {
@@ -60,15 +75,20 @@ function createNewTimer(name, duration, message) {
     let timerName = "Timer_" + name;
     timerName = setInterval(function(){
         timersDict[name].difference = calcTimeDelta(timersDict[name].destinationDate);
-
+        timersDict[name].timeLeft = new Date(Date.parse(new Date()) + timersDict[name].difference);
+        console.log(convertDifferenceToHHMMSS(timersDict[name].timeLeft.toString()));
+        
+        // timersDict[name].timeLeft = convertDifferenceToHHMMSS(stringToDate(timersDict[name].difference.toString()));
         if(parseInt(timersDict[name].difference) <= 0){
             clearInterval(timerName);
+            timersDict[name].timeLeft = "Expired";
             return message.reply(`${name} timer is up!`);
         }
     }, 750);
 }
 
-// Convert from 04:20:20 to January 5th, 2021 
+// Input: 5:00:00
+// Output: December 5th 2021 8:00:00 UTC
 function stringToDate(stringDate){
     var years, months, days, hours, minutes, seconds = 0;
 
@@ -186,6 +206,8 @@ function stringToDate(stringDate){
 }
 
 // For viewing functionality, we want the user to be able to see time left with status command
+// Input: Sun Dec 05 2021 23:08:31 GMT-0800 (Pacific Standard Time)
+// Output: 04:20:20:01
 function convertDifferenceToHHMMSS(date) {
         var difference = calcTimeDelta(date);
         var sec_num = parseInt(difference / 1000);
@@ -206,6 +228,8 @@ function convertDifferenceToHHMMSS(date) {
 }
 
 // Calculates difference between Date and Now
+// Input: Mon Dec 06 2021 15:43:48 GMT-0800 (Pacific Standard Time)
+// Output: 58966000
 function calcTimeDelta(destinationDate){
     return Date.parse(destinationDate) - Date.parse(new Date());
 }
